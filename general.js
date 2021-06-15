@@ -14,68 +14,68 @@ function setInitialStylePrivatePage() {
     openQuestionDiv.style.display = "none";
     feedbackForm.style.display = "none";
     feedbackSubmitButton.style.display = "none";
-  }
+}
 
-  async function ifSoldItemAskForAddress(userID) {
+async function ifSoldItemAskForAddress(userID) {
     let status = "";
     let shippingStatus = "";
     let addressFirstName = "";
 
     // First, get items with status "Sold" and shippingStatus "Not sent"
     await db.collection("items")
-      .where("user", "==", userID)
-      .where("status", "==", "Sold")
-      .where("shippingStatus", "==", "Not sent")
-      .orderBy("soldDate")
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          status = doc.data().status;
-          shippingStatus = doc.data().shippingStatus;
+        .where("user", "==", userID)
+        .where("status", "==", "Sold")
+        .where("shippingStatus", "==", "Not sent")
+        .orderBy("soldDate")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                status = doc.data().status;
+                shippingStatus = doc.data().shippingStatus;
+            });
         });
-      });
 
     // Second, check if user has no address added yet
     await db.collection("users").doc(userID).get().then((doc) => {
-      addressFirstName = doc.data().addressFirstName;
+        addressFirstName = doc.data().addressFirstName;
     });
 
     // Third, redirect user if user has no address and at least one item that's sold but not shipped
     if (status == "Sold" && shippingStatus == "Not sent" && addressFirstName == undefined) {
-      window.location.href = window.location.origin + "/address-form";
+        window.location.href = window.location.origin + "/address-form";
     }
-  }
+}
 
-  function loadSoldByOthers(userID) {
+function loadSoldByOthers(userID) {
     var itemListSoldByOthers = document.getElementById('itemListSoldByOthers');
 
     // SOLD BY OTHERS QUERY + Add cards to list
     db.collection("items")
-      .where("status", "==", "Sold")
-      .orderBy('soldDate', 'desc')
-      .limit(20)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          var sellerId = doc.data().user;
-          var brand = doc.data().brand;
-          var soldPrice = doc.data().soldPrice;
-          var images = doc.data().images;
-          var imageUrl = images.frontImage;
+        .where("status", "==", "Sold")
+        .orderBy('soldDate', 'desc')
+        .limit(20)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var sellerId = doc.data().user;
+                var brand = doc.data().brand;
+                var soldPrice = doc.data().soldPrice;
+                var images = doc.data().images;
+                var imageUrl = images.frontImage;
 
-          // Add card to list if seller is other than myself
-          if (sellerId != userID) {
-            if ("productImage" in images) {
-              imageUrl = images.productImage;
-            }
-            var soldByOthersItemCardHTML = `<div class="div-block-14"><div class="ratio-box _16-9"><div class="conten-block with-image"><div class="img-container" style="background-image: url('${imageUrl}');"></div></div></div><div class="text-block-14">${soldPrice} kr</div><div class='text-block-34'>${brand}</div></div>`;
-            itemListSoldByOthers.innerHTML += soldByOthersItemCardHTML;
-          }
+                // Add card to list if seller is other than myself
+                if (sellerId != userID) {
+                    if ("productImage" in images) {
+                        imageUrl = images.productImage;
+                    }
+                    var soldByOthersItemCardHTML = `<div class="div-block-14"><div class="ratio-box _16-9"><div class="conten-block with-image"><div class="img-container" style="background-image: url('${imageUrl}');"></div></div></div><div class="text-block-14">${soldPrice} kr</div><div class='text-block-34'>${brand}</div></div>`;
+                    itemListSoldByOthers.innerHTML += soldByOthersItemCardHTML;
+                }
+            });
         });
-      });
-  }
+}
 
-  function getPickupTimeInfoDiv(pickupDate) {
+function getPickupTimeInfoDiv(pickupDate) {
     // Update the pickup time to display to user
     var date = new Date(pickupDate);
     var days = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'];
@@ -90,43 +90,43 @@ function setInitialStylePrivatePage() {
                                         <div id="pickupTimeInfoText" class="text-block-17-copy">${pickupTimeInfoText}</div>
                                     </div>`;
     return div;
-  }
+}
 
-  function getBookPickupButton(itemId, soldDate, brand) {
+function getBookPickupButton(itemId, soldDate, brand) {
     const div = `<a id="bookPickupButton" href="javascript:openPickupToast('${itemId}', '${soldDate}', '${brand}');" class="link-block-4-copy w-inline-block">
                                         <img src="https://global-uploads.webflow.com/6055e6b453114a22c1c345f0/608db91c363e28ae251e0998_delivery-truck%204.svg" loading="lazy" width="34" alt="" class="image-4">
                                         <div class="text-block-17-copy">Boka hämtning</div>
                                     </a>`;
     return div;
-  }
+}
 
-  function closePickupToast() {
+function closePickupToast() {
     bookPickupToast.style.display = 'none';
-  }
+}
 
-  function closeFeedbackForm() {
+function closeFeedbackForm() {
     feedbackForm.style.display = 'none';
-  }
+}
 
-  function emptyListsInnerHTML() {
+function emptyListsInnerHTML() {
     itemListSelling.innerHTML = "";
     itemListSoldNotSent.innerHTML = "";
     itemListSold.innerHTML = "";
     itemListSoldByOthers.innerHTML = "";
-  }
+}
 
-  // PICKUP RELATED FUNCTIONS
-  var currentItem = "";
-  var currentBrand = "";
+// PICKUP RELATED FUNCTIONS
+var currentItem = "";
+var currentBrand = "";
 
-  function openPickupToast(itemId, soldDate, brand) {
+function openPickupToast(itemId, soldDate, brand) {
     setDatesOfPickupToast(soldDate);
     currentItem = itemId;
     currentBrand = brand;
     document.getElementById('triggerPickupAnimation').click();
-  }
+}
 
-  function setDatesOfPickupToast(soldDate) {
+function setDatesOfPickupToast(soldDate) {
 
     // Get the 2 first business days, 3 days after soldDate
     var firstDate = new Date(soldDate);
@@ -134,16 +134,19 @@ function setInitialStylePrivatePage() {
     var soldDate = new Date(soldDate);
 
     firstDate.setDate(soldDate.getDate() + 4); // 4
-    secondDate.setDate(soldDate.getDate() + 5); // 5
 
     // Om helgdag, skjut på det så att man bara kan välja veckodagar
     if (firstDate.getDay() == 0) {
-      firstDate.setDate(firstDate.getDate() + 1);
-      secondDate.setDate(firstDate.getDate() + 1);
+        firstDate.setDate(firstDate.getDate() + 1);
     } else if (firstDate.getDay() == 6) {
-      firstDate.setDate(firstDate.getDate() + 2);
-      secondDate.setDate(firstDate.getDate() + 1);
+        firstDate.setDate(firstDate.getDate() + 2);
     }
+
+    secondDate.setDate(firstDate.getDate() + 1);
+    if (secondDate.getDay() == 6) {
+        secondDate.setDate(secondDate.getDate() + 2);
+    }
+
 
     var days = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'];
     var months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
@@ -161,58 +164,57 @@ function setInitialStylePrivatePage() {
     // Show dates
     pickupDateOne.innerHTML = dayName1 + ", " + dateNumber1 + " " + monthName1 + ", kl 9-16";
     pickupDateTwo.innerHTML = dayName2 + ", " + dateNumber2 + " " + monthName2 + ", kl 9-16";
-  }
+}
 
-  async function bookPickup() {
+async function bookPickup() {
     let pickupDate = "";
     var pickupRadioButtons = document.getElementsByName("Pickup");
     for (var x = 0; x < pickupRadioButtons.length; x++) {
-      if (pickupRadioButtons[x].checked) {
-        pickupDate = pickupRadioButtons[x].value; // yyyy--mm-dd
-      }
+        if (pickupRadioButtons[x].checked) {
+            pickupDate = pickupRadioButtons[x].value; // yyyy--mm-dd
+        }
     }
 
     const itemRef = db.collection('items').doc(currentItem);
     const res = await itemRef.update({
-      pickupDate: pickupDate
+        pickupDate: pickupDate
     }).then(function () {
-      console.log(`pickupDate is now set on Firestore item`);
-      bookPickupToast.style.display = 'none';
-      feedbackForm.style.display = 'block';
-      happinessQuestionText.innerText = `Hur nöjd är du med försäljningen 
+        console.log(`pickupDate is now set on Firestore item`);
+        bookPickupToast.style.display = 'none';
+        feedbackForm.style.display = 'block';
+        happinessQuestionText.innerText = `Hur nöjd är du med försäljningen 
     av ditt ${currentBrand}-plagg?`;
     });
+}
 
-  }
-
-  async function setHappinessRate(value) {
+async function setHappinessRate(value) {
     const itemRef = db.collection('items').doc(currentItem);
     const res = await itemRef.update({
-      happinessRate: value
+        happinessRate: value
     }).then(function () {
-      console.log(`happinessRate is now set on Firestore item`);
-      happinessQuestionDiv.style.display = 'none';
-      openQuestionDiv.style.display = 'block';
-      feedbackSubmitButton.style.display = 'block';
+        console.log(`happinessRate is now set on Firestore item`);
+        happinessQuestionDiv.style.display = 'none';
+        openQuestionDiv.style.display = 'block';
+        feedbackSubmitButton.style.display = 'block';
     });
-  }
+}
 
-  async function storeFeedback() {
+async function storeFeedback() {
     const value = feedbackTextField.value;
     const itemRef = db.collection('items').doc(currentItem);
     const res = await itemRef.update({
-      feedbackText: value
+        feedbackText: value
     }).then(function () {
-      console.log(`feedbackText is now set on Firestore item`);
-      feedbackForm.style.display = 'none';
-      location.reload();
+        console.log(`feedbackText is now set on Firestore item`);
+        feedbackForm.style.display = 'none';
+        location.reload();
     });
-  }
+}
 
-  function signOut() {
+function signOut() {
     firebase.auth().signOut().then(() => {
-      console.log('User signed out');
+        console.log('User signed out');
     }).catch((error) => {
 
     });
-  }
+}
