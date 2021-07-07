@@ -53,7 +53,7 @@ function loadSoldByOthers(userID) {
     db.collection("items")
         .where("status", "==", "Sold")
         .orderBy('soldDate', 'desc')
-        .limit(20)
+        .limit(30)
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
