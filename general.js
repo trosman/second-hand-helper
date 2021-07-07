@@ -64,7 +64,7 @@ function loadSoldByOthers(userID) {
                 var imageUrl = images.frontImage;
 
                 // Add card to list if seller is other than myself
-                if (sellerId != userID) {
+                if (sellerId != userID && soldPrice >= 200) {
                     if ("productImage" in images) {
                         imageUrl = images.productImage;
                     }
