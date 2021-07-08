@@ -131,6 +131,8 @@ function setDatesOfPickupToast(soldDate) {
     // Get the 2 first business days, 3 days after soldDate
     var firstDate = new Date(soldDate);
     var secondDate = new Date(soldDate);
+    var thirdDate = new Date(soldDate);
+    var forthDate = new Date(soldDate);
     var soldDate = new Date(soldDate);
 
     firstDate.setDate(soldDate.getDate() + 4); // 4
@@ -147,23 +149,44 @@ function setDatesOfPickupToast(soldDate) {
         secondDate.setDate(secondDate.getDate() + 2);
     }
 
+    thirdDate.setDate(secondDate.getDate() + 1);
+    if (thirdDate.getDay() == 6) {
+        thirdDate.setDate(thirdDate.getDate() + 2);
+    }
+
+    forthDate.setDate(thirdDate.getDate() + 1);
+    if (forthDate.getDay() == 6) {
+        forthDate.setDate(forthDate.getDate() + 2);
+    }
 
     var days = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'];
     var months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+    
+    /*
     var dateNumber1 = firstDate.getDate();
     var dateNumber2 = secondDate.getDate();
     var monthName1 = months[firstDate.getMonth()];
     var monthName2 = months[secondDate.getMonth()];
     var dayName1 = days[firstDate.getDay()];
     var dayName2 = days[secondDate.getDay()];
+    */
 
     // Change value of radio buttons
     $('#radioButtonOne').val(firstDate.toISOString().split('T')[0]); //yyyy-mm-dd
     $('#radioButtonTwo').val(secondDate.toISOString().split('T')[0]); //yyyy-mm-dd
+    $('#radioButtonThree').val(thirdDate.toISOString().split('T')[0]); //yyyy-mm-dd
+    $('#radioButtonFour').val(forthDate.toISOString().split('T')[0]); //yyyy-mm-dd
 
     // Show dates
+    pickupDateOne.innerHTML = days[firstDate.getDay()] + ", " + firstDate.getDate() + " " + months[firstDate.getMonth()] + ", kl 9-16";
+    pickupDateTwo.innerHTML = days[secondDate.getDay()] + ", " + secondDate.getDate() + " " + months[secondDate.getMonth()] + ", kl 9-16";
+    pickupDateThree.innerHTML = days[thirdDate.getDay()] + ", " + thirdDate.getDate() + " " + months[thirdDate.getMonth()] + ", kl 9-16";
+    pickupDateFour.innerHTML = days[forthDate.getDay()] + ", " + forthDate.getDate() + " " + months[forthDate.getMonth()] + ", kl 9-16";
+
+    /*
     pickupDateOne.innerHTML = dayName1 + ", " + dateNumber1 + " " + monthName1 + ", kl 9-16";
     pickupDateTwo.innerHTML = dayName2 + ", " + dateNumber2 + " " + monthName2 + ", kl 9-16";
+    */
 }
 
 async function bookPickup() {
