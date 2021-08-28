@@ -93,7 +93,7 @@ function getPickupTimeInfoDiv(pickupDate) {
 }
 
 function getBookPickupButton(itemId, soldDate, brand) {
-    const div = `<a id="bookPickupButton" href="javascript:openPickupToast('${itemId}', '${soldDate}', '${brand}');" class="link-block-4-copy w-inline-block">
+    const div = `<a id="bookPickupButton" href="javascript:openPickupToast('${itemId}', '${soldDate}', '${brand}');" class="link-block-13 w-inline-block">
                                         <img src="https://global-uploads.webflow.com/6055e6b453114a22c1c345f0/608db91c363e28ae251e0998_delivery-truck%204.svg" loading="lazy" width="34" alt="" class="image-4">
                                         <div class="text-block-17-copy">Boka hämtning</div>
                                     </a>`;
