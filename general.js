@@ -128,14 +128,9 @@ function openPickupToast(itemId, soldDate, brand) {
 
 function setDatesOfPickupToast(soldDate) {
 
-    // Get the 2 first business days, 3 days after soldDate
+    // Get the 4 first business days, 3 days after soldDate
     var firstDate = new Date(soldDate);
-    var secondDate = new Date(soldDate);
-    var thirdDate = new Date(soldDate);
-    var forthDate = new Date(soldDate);
-    var soldDate = new Date(soldDate);
-
-    firstDate.setDate(soldDate.getDate() + 4); // 4
+    firstDate.setDate(firstDate.getDate() + 4);
 
     // Om helgdag, skjut på det så att man bara kan välja veckodagar
     if (firstDate.getDay() == 0) {
@@ -144,17 +139,20 @@ function setDatesOfPickupToast(soldDate) {
         firstDate.setDate(firstDate.getDate() + 2);
     }
 
-    secondDate.setDate(firstDate.getDate() + 1);
+    var secondDate = new Date(firstDate);
+    secondDate.setDate(secondDate.getDate() + 1);
     if (secondDate.getDay() == 6) {
         secondDate.setDate(secondDate.getDate() + 2);
     }
 
-    thirdDate.setDate(secondDate.getDate() + 1);
+    var thirdDate = new Date(secondDate);
+    thirdDate.setDate(thirdDate.getDate() + 1);
     if (thirdDate.getDay() == 6) {
         thirdDate.setDate(thirdDate.getDate() + 2);
     }
 
-    forthDate.setDate(thirdDate.getDate() + 1);
+    var forthDate = new Date(thirdDate);
+    forthDate.setDate(forthDate.getDate() + 1);
     if (forthDate.getDay() == 6) {
         forthDate.setDate(forthDate.getDate() + 2);
     }
